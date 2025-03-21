@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UsePipes } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UsePipes } from '@nestjs/common'
 import { TodoService } from './todo.service'
-import { CreateTodoDto, updateTodoDto } from './todo.dto'
+import { CreateTodoDto, FindTodoDto, updateTodoDto } from './todo.dto'
 import { JoiValidationPipe } from 'src/common/validation/validation.pipe'
 import TodoValidation from './todo.validation'
 
@@ -15,8 +15,9 @@ export class TodoController {
     }
 
     @Get()
-    async findAll() {
-        return this.todoService.findAll()
+    @UsePipes(new JoiValidationPipe({ querySchema: TodoValidation.find }))
+    async find(@Query() findTodoDto: FindTodoDto) {
+        return this.todoService.find(findTodoDto)
     }
 
     @Get(':id')
