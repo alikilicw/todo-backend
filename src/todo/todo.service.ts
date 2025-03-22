@@ -18,7 +18,7 @@ export class TodoService {
 
         if (createTodoDto.thumbnail) {
             const thumbnail = await this.s3Service.uploadFile({
-                parentDir: '/thumbnails',
+                parentDir: 'thumbnails',
                 ...createTodoDto.thumbnail[0]
             })
             thumbnailKey = thumbnail.Key
@@ -26,7 +26,7 @@ export class TodoService {
 
         if (createTodoDto.file) {
             const file = await this.s3Service.uploadFile({
-                parentDir: '/files',
+                parentDir: 'files',
                 ...createTodoDto.file[0]
             })
             fileKey = file.Key
