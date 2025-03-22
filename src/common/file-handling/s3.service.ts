@@ -8,6 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config'
 import { ReadStream, createReadStream } from 'fs'
 import Stream from 'stream'
+import { Response } from 'express'
 
 export type S3File = Express.Multer.File & {
     parentDir: string
@@ -36,7 +37,8 @@ export class S3Service {
         const uploadParams = {
             Bucket: this.bucketName,
             Body: fileStream,
-            Key: fileKey
+            Key: fileKey,
+            ContentType: file.mimetype
         }
 
         const command = new PutObjectCommand(uploadParams)
@@ -57,6 +59,7 @@ export class S3Service {
 
         try {
             const response = await this.s3.send(command)
+
             return {
                 stream: response.Body as Stream,
                 contentType: response.ContentType
