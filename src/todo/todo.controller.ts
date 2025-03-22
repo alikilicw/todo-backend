@@ -89,7 +89,7 @@ export class TodoController {
 
     @Delete(':id')
     @UsePipes(new JoiValidationPipe({ paramSchema: TodoValidation.id }))
-    async delete(@Param('id') params: { id: string }) {
+    async delete(@Param() params: { id: string }) {
         return this.todoService.delete(params.id)
     }
 }

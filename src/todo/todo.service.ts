@@ -92,6 +92,8 @@ export class TodoService {
         const todoControl = await this.findById(id)
         if (!todoControl) throw new NotFoundException('Todo not found.')
 
-        this.todoModel.findByIdAndDelete(id)
+        // Files can be deleted from s3 when todo delete
+
+        await this.todoModel.findByIdAndDelete(id)
     }
 }
