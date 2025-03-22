@@ -6,7 +6,7 @@ import {
     S3Client
 } from '@aws-sdk/client-s3'
 import { ConfigService } from '@nestjs/config'
-import fs, { ReadStream } from 'fs'
+import { ReadStream, createReadStream } from 'fs'
 import Stream from 'stream'
 
 export type S3File = Express.Multer.File & {
@@ -30,7 +30,7 @@ export class S3Service {
     }
 
     async uploadFile(file: S3File) {
-        const fileStream: ReadStream = fs.createReadStream(file.path)
+        const fileStream: ReadStream = createReadStream(file.path)
         const fileKey = `${file.parentDir}/${file.filename}`
 
         const uploadParams = {
@@ -50,12 +50,12 @@ export class S3Service {
     }
 
     async getFile(fileKey: string) {
-        try {
-            const command = new GetObjectCommand({
-                Bucket: this.bucketName,
-                Key: fileKey
-            })
+        const command = new GetObjectCommand({
+            Bucket: this.bucketName,
+            Key: fileKey
+        })
 
+        try {
             const response = await this.s3.send(command)
             return {
                 stream: response.Body as Stream,
