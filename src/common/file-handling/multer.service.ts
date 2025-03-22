@@ -1,27 +1,47 @@
-import { Injectable } from '@nestjs/common'
-import { existsSync, mkdirSync } from 'fs'
-import multer from 'multer'
-import { join } from 'path'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { mkdirSync } from 'fs'
+import multer = require('multer')
+import path = require('path')
 
-@Injectable()
 export class MulterService {
-    private storage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            const uploadPath = join(__dirname, '../../uploads')
+    static storage = multer.diskStorage({
+        destination: (req: Express.Request, file: Express.Multer.File, cb: Function) => {
+            const root = path.dirname(__dirname || '').split('dist')[0]
 
-            if (!existsSync(uploadPath)) mkdirSync(uploadPath, { recursive: true })
+            mkdirSync(path.join(root, '/uploads'), { recursive: true })
 
-            cb(null, uploadPath)
+            cb(null, path.join(root, '/uploads'))
         },
-        filename: (req, file, cb) => {
+        filename: (req: Express.Request, file: Express.Multer.File, cb: Function) => {
             const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`
             cb(null, `${uniqueSuffix}-${file.originalname}`)
         }
     })
 
-    private upload = multer({ storage: this.storage })
+    static fileFilter = (req: Express.Request, file: Express.Multer.File, cb: Function) => {
+        const fileType = file.fieldname
 
-    getMulter() {
-        return this.upload
+        if (fileType === 'thumbnail') {
+            if (!file.mimetype.startsWith('image/')) {
+                return cb(
+                    new BadRequestException('Only image files are allowed for thumbnails'),
+                    false
+                )
+            }
+        } else if (fileType === 'file') {
+            const allowedFileTypes = [
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            ]
+            if (!allowedFileTypes.includes(file.mimetype)) {
+                return cb(
+                    new BadRequestException('Only PDF or Word files are allowed for file'),
+                    false
+                )
+            }
+        }
+
+        cb(null, true)
     }
 }
