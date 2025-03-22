@@ -57,7 +57,35 @@ export class TodoService {
         const todoControl = await this.findById(id)
         if (!todoControl) throw new NotFoundException('Todo not found.')
 
-        return this.todoModel.findByIdAndUpdate(id, updateTodoDto, { new: true })
+        let thumbnailKey: string | null
+        let fileKey: string | null
+
+        if (updateTodoDto.thumbnail) {
+            const thumbnail = await this.s3Service.uploadFile({
+                parentDir: 'thumbnails',
+                ...updateTodoDto.thumbnail[0]
+            })
+            thumbnailKey = thumbnail.Key
+        }
+
+        if (updateTodoDto.file) {
+            const file = await this.s3Service.uploadFile({
+                parentDir: 'files',
+                ...updateTodoDto.file[0]
+            })
+            fileKey = file.Key
+        }
+
+        return this.todoModel.findByIdAndUpdate(
+            id,
+            {
+                title: updateTodoDto.title,
+                description: updateTodoDto.description,
+                thumbnailKey,
+                fileKey
+            },
+            { new: true }
+        )
     }
 
     async delete(id: string): Promise<void> {

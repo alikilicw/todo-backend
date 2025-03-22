@@ -18,7 +18,9 @@ import {
     CreateTodoDtoFields,
     CreateTodoDtoFiles,
     FindTodoDto,
-    UpdateTodoDto
+    UpdateTodoDto,
+    UpdateTodoDtoFields,
+    UpdateTodoDtoFiles
 } from './todo.dto'
 import { JoiValidationPipe } from 'src/common/validation/validation.pipe'
 import TodoValidation from './todo.validation'
@@ -65,8 +67,24 @@ export class TodoController {
     @UsePipes(
         new JoiValidationPipe({ paramSchema: TodoValidation.id, bodySchema: TodoValidation.update })
     )
-    async update(@Param('id') params: { id: string }, @Body() updateTodoDto: UpdateTodoDto) {
-        return this.todoService.update(params.id, updateTodoDto)
+    @UseInterceptors(
+        FileFieldsInterceptor(
+            [
+                { name: 'thumbnail', maxCount: 1 },
+                { name: 'file', maxCount: 1 }
+            ],
+            {
+                storage: MulterService.storage,
+                fileFilter: MulterService.fileFilter
+            }
+        )
+    )
+    async update(
+        @Param() params: { id: string },
+        @Body() updateTodoDto: UpdateTodoDtoFields,
+        @UploadedFiles() files: UpdateTodoDtoFiles
+    ) {
+        return this.todoService.update(params.id, { ...updateTodoDto, ...files })
     }
 
     @Delete(':id')
