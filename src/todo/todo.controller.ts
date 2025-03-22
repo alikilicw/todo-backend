@@ -1,17 +1,52 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UsePipes } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Query,
+    UploadedFile,
+    UploadedFiles,
+    UseInterceptors,
+    UsePipes
+} from '@nestjs/common'
 import { TodoService } from './todo.service'
-import { CreateTodoDto, FindTodoDto, updateTodoDto } from './todo.dto'
+import {
+    CreateTodoDto,
+    CreateTodoDtoFields,
+    CreateTodoDtoFiles,
+    FindTodoDto,
+    UpdateTodoDto
+} from './todo.dto'
 import { JoiValidationPipe } from 'src/common/validation/validation.pipe'
 import TodoValidation from './todo.validation'
-
+import { FileFieldsInterceptor } from '@nestjs/platform-express'
+import { MulterService } from 'src/common/file-handling/multer.service'
 @Controller('todos')
 export class TodoController {
     constructor(private readonly todoService: TodoService) {}
 
     @Post()
     @UsePipes(new JoiValidationPipe({ bodySchema: TodoValidation.create }))
-    async create(@Body() createTodoDto: CreateTodoDto) {
-        return this.todoService.create(createTodoDto)
+    @UseInterceptors(
+        FileFieldsInterceptor(
+            [
+                { name: 'thumbnail', maxCount: 1 },
+                { name: 'file', maxCount: 1 }
+            ],
+            {
+                storage: MulterService.storage,
+                fileFilter: MulterService.fileFilter
+            }
+        )
+    )
+    async create(
+        @Body() createTodoDto: CreateTodoDtoFields,
+        @UploadedFiles() files: CreateTodoDtoFiles
+    ) {
+        return this.todoService.create({ ...createTodoDto, ...files })
     }
 
     @Get()
@@ -30,7 +65,7 @@ export class TodoController {
     @UsePipes(
         new JoiValidationPipe({ paramSchema: TodoValidation.id, bodySchema: TodoValidation.update })
     )
-    async update(@Param('id') params: { id: string }, @Body() updateTodoDto: updateTodoDto) {
+    async update(@Param('id') params: { id: string }, @Body() updateTodoDto: UpdateTodoDto) {
         return this.todoService.update(params.id, updateTodoDto)
     }
 
