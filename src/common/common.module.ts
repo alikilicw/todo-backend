@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
+import { MulterService } from './file-handling/multer.service'
+import { S3Service } from './file-handling/s3.service'
 
-@Module({})
+@Module({
+    providers: [MulterService, S3Service],
+    exports: [MulterService, S3Service]
+})
 export class CommonModule {}
