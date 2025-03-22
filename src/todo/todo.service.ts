@@ -50,7 +50,7 @@ export class TodoService {
     }
 
     async find(findTodoDto: FindTodoDto): Promise<Todo[]> {
-        return this.todoModel.find(findTodoDto)
+        return this.todoModel.find(findTodoDto).sort({ createdAt: -1 })
     }
 
     async update(id: string, updateTodoDto: UpdateTodoDto): Promise<Todo> {
