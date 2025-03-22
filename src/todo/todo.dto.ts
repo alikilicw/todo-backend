@@ -14,4 +14,14 @@ export type FindTodoDto = {
     title?: string
 }
 
-export type UpdateTodoDto = CreateTodoDtoFields
+export type UpdateTodoDtoFields = {
+    title: string
+    description?: string
+}
+
+export type UpdateTodoDtoFiles = {
+    thumbnail?: Express.Multer.File
+    file?: Express.Multer.File
+}
+
+export type UpdateTodoDto = UpdateTodoDtoFields & UpdateTodoDtoFiles
