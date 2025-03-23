@@ -20,6 +20,7 @@ import {
     CreateTodoDtoFields,
     CreateTodoDtoFiles,
     FindTodoDto,
+    FindTodoRes,
     UpdateTodoDto,
     UpdateTodoDtoFields,
     UpdateTodoDtoFiles
@@ -62,10 +63,13 @@ export class TodoController {
 
     @Get()
     @UsePipes(new JoiValidationPipe({ querySchema: TodoValidation.find }))
-    async find(@Req() req: Request, @Query() findTodoDto: FindTodoDto) {
+    async find(@Req() req: Request, @Query() findTodoDto: FindTodoDto): Promise<FindTodoRes> {
         const reqUser = req.user! as User
 
-        return this.todoService.find(reqUser, findTodoDto)
+        return {
+            ...(await this.todoService.find(reqUser, findTodoDto)),
+            message: 'OK.'
+        }
     }
 
     @Get(':id')

@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { InjectModel } from '@nestjs/mongoose'
 import { Todo } from './todo.model'
 import { Model } from 'mongoose'
-import { CreateTodoDto, FindTodoDto, UpdateTodoDto } from './todo.dto'
+import { CreateTodoDto, FindTodoDto, FindTodoRes, UpdateTodoDto } from './todo.dto'
 import { S3Service } from 'src/common/file-handling/s3.service'
 import { User } from 'src/user/user.model'
 import { OpenAiService } from 'src/common/openai/openai.service'
@@ -56,14 +56,26 @@ export class TodoService {
         return this.todoModel.findById(id)
     }
 
-    async find(reqUser: User, findTodoDto: FindTodoDto): Promise<Todo[]> {
+    async find(reqUser: User, findTodoDto: FindTodoDto): Promise<FindTodoRes> {
+        const page = findTodoDto.page || 1
+        const limit = findTodoDto.limit || 5
+
         let query = this.todoModel.find({ user: reqUser._id })
 
         if (findTodoDto.title) {
             query.find({ title: { $regex: findTodoDto.title, $options: 'i' } })
         }
 
-        return query.sort({ createdAt: -1 })
+        const total = await this.todoModel.countDocuments(query)
+
+        // default page ve limit girmeyi unutma
+
+        const todos = await query
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit)
+
+        return { total, page, limit, data: todos }
     }
 
     async update(reqUser: User, id: string, updateTodoDto: UpdateTodoDto): Promise<Todo> {
