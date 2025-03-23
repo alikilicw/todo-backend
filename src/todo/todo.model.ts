@@ -18,6 +18,9 @@ export class Todo extends Document {
 
     @Prop({ type: mongoose.Schema.ObjectId, ref: User.name, required: true })
     user: User
+
+    @Prop()
+    recommendations: string
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo)
