@@ -50,7 +50,13 @@ export class TodoService {
     }
 
     async find(findTodoDto: FindTodoDto): Promise<Todo[]> {
-        return this.todoModel.find(findTodoDto).sort({ createdAt: -1 })
+        let query = this.todoModel.find()
+
+        if (findTodoDto.title) {
+            query.find({ title: { $regex: findTodoDto.title, $options: 'i' } })
+        }
+
+        return query.sort({ createdAt: -1 })
     }
 
     async update(id: string, updateTodoDto: UpdateTodoDto): Promise<Todo> {
