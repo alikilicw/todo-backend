@@ -3,14 +3,16 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Todo } from './todo.model'
 import { Model } from 'mongoose'
 import { CreateTodoDto, FindTodoDto, UpdateTodoDto } from './todo.dto'
-import { S3File, S3Service } from 'src/common/file-handling/s3.service'
+import { S3Service } from 'src/common/file-handling/s3.service'
 import { User } from 'src/user/user.model'
+import { OpenAiService } from 'src/common/openai/openai.service'
 
 @Injectable()
 export class TodoService {
     constructor(
         @InjectModel(Todo.name) private todoModel: Model<Todo>,
-        private readonly s3Service: S3Service
+        private readonly s3Service: S3Service,
+        private readonly openaiService: OpenAiService
     ) {}
 
     async create(reqUser: User, createTodoDto: CreateTodoDto): Promise<Todo> {
@@ -33,12 +35,15 @@ export class TodoService {
             fileKey = file.Key
         }
 
+        const recommendations = await this.openaiService.askChatGPT(createTodoDto.title)
+
         const createdTodo = new this.todoModel({
             title: createTodoDto.title,
             description: createTodoDto.description,
             thumbnailKey,
             fileKey,
-            user: reqUser._id
+            user: reqUser._id,
+            recommendations
         })
         return createdTodo.save()
     }
@@ -62,9 +67,6 @@ export class TodoService {
     }
 
     async update(reqUser: User, id: string, updateTodoDto: UpdateTodoDto): Promise<Todo> {
-        console.log('id', id)
-        console.log('updateTodoDto', updateTodoDto)
-
         const todoControl = await this.findById(id)
         if (!todoControl) throw new NotFoundException('Todo not found.')
 
@@ -90,16 +92,19 @@ export class TodoService {
             fileKey = file.Key
         }
 
-        return this.todoModel.findByIdAndUpdate(
-            id,
-            {
-                title: updateTodoDto.title,
-                description: updateTodoDto.description,
-                thumbnailKey,
-                fileKey
-            },
-            { new: true }
-        )
+        let updateParams: Partial<Todo> = {
+            title: updateTodoDto.title,
+            description: updateTodoDto.description,
+            thumbnailKey,
+            fileKey
+        }
+
+        if (updateTodoDto.title && todoControl.title != updateTodoDto.title) {
+            const recommendations = await this.openaiService.askChatGPT(updateTodoDto.title)
+            if (recommendations) updateParams.recommendations = recommendations
+        }
+
+        return this.todoModel.findByIdAndUpdate(id, updateParams, { new: true })
     }
 
     async delete(reqUser: User, id: string): Promise<void> {
