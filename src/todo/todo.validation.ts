@@ -8,7 +8,7 @@ export default class TodoValidation extends BaseValidation {
     })
 
     public static find = Joi.object({
-        title: Joi.string().min(5).max(50).optional()
+        title: Joi.string().min(3).max(50).optional()
     })
 
     public static update = Joi.object({
