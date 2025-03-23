@@ -5,6 +5,8 @@ import { TodoModule } from './todo/todo.module'
 import { MongooseModule } from '@nestjs/mongoose'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { CommonModule } from './common/common.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
     imports: [
@@ -17,7 +19,9 @@ import { CommonModule } from './common/common.module';
                 uri: configService.get<string>('MONGO_URL')
             })
         }),
-        CommonModule
+        CommonModule,
+        AuthModule,
+        UserModule
     ],
     controllers: [AppController],
     providers: [AppService]
