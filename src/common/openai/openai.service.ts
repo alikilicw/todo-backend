@@ -13,18 +13,22 @@ export class OpenAiService {
         })
     }
 
-    async askChatGPT(prompt: string): Promise<string> {
+    async askChatGPT(prompt: string): Promise<string | undefined> {
         try {
             const response = await this.openai.chat.completions.create({
                 model: 'gpt-4o-mini',
-                messages: [{ role: 'user', content: prompt }],
-                max_completion_tokens: 70
+                messages: [
+                    {
+                        role: 'user',
+                        content: 'Can you make suggestions for this todo (keep it short): ' + prompt
+                    }
+                ]
             })
 
             return response.choices[0]?.message?.content || 'No Response From GPT.'
         } catch (error) {
             console.error('ChatGPT Error:', error)
-            return 'There is an error from GPT'
+            return undefined
         }
     }
 }
