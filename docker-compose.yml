@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+    app:
+        container_name: todo_backend
+        build:
+            context: .
+        image: todo_backend
+        ports:
+            - '5000:5000'
+        networks:
+            - todo_network
+
+networks:
+    todo_network:
+        external: true
