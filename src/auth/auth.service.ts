@@ -39,7 +39,7 @@ export class AuthService {
 
         await user.save()
 
-        await this.otpService.sendMail(user.email, confirmationCode)
+        this.otpService.sendMail(user.email, confirmationCode)
         const token = await this.createToken(user, '3m')
         return {
             token
@@ -65,8 +65,6 @@ export class AuthService {
     }
 
     async createToken(user: User, expiresIn: StringValue): Promise<string> {
-        console.log(user)
-
         return sign(
             { id: user._id, username: user.username },
             this.configService.get<string>('ACCESS_TOKEN_SECRET_KEY'),

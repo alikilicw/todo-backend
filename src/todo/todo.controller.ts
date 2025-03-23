@@ -7,8 +7,10 @@ import {
     Patch,
     Post,
     Query,
+    Req,
     UploadedFile,
     UploadedFiles,
+    UseGuards,
     UseInterceptors,
     UsePipes
 } from '@nestjs/common'
@@ -26,6 +28,10 @@ import { JoiValidationPipe } from 'src/common/validation/validation.pipe'
 import TodoValidation from './todo.validation'
 import { FileFieldsInterceptor } from '@nestjs/platform-express'
 import { MulterService } from 'src/common/file-handling/multer.service'
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
+import { Request } from 'express'
+import { User } from 'src/user/user.model'
+@UseGuards(JwtAuthGuard)
 @Controller('todos')
 export class TodoController {
     constructor(private readonly todoService: TodoService) {}
@@ -45,16 +51,21 @@ export class TodoController {
         )
     )
     async create(
+        @Req() req: Request,
         @Body() createTodoDto: CreateTodoDtoFields,
         @UploadedFiles() files: CreateTodoDtoFiles
     ) {
-        return this.todoService.create({ ...createTodoDto, ...files })
+        const reqUser = req.user as User
+
+        return this.todoService.create(reqUser, { ...createTodoDto, ...files })
     }
 
     @Get()
     @UsePipes(new JoiValidationPipe({ querySchema: TodoValidation.find }))
-    async find(@Query() findTodoDto: FindTodoDto) {
-        return this.todoService.find(findTodoDto)
+    async find(@Req() req: Request, @Query() findTodoDto: FindTodoDto) {
+        const reqUser = req.user! as User
+
+        return this.todoService.find(reqUser, findTodoDto)
     }
 
     @Get(':id')
@@ -80,16 +91,21 @@ export class TodoController {
         )
     )
     async update(
+        @Req() req: Request,
         @Param() params: { id: string },
         @Body() updateTodoDto: UpdateTodoDtoFields,
         @UploadedFiles() files: UpdateTodoDtoFiles
     ) {
-        return this.todoService.update(params.id, { ...updateTodoDto, ...files })
+        const reqUser = req.user! as User
+
+        return this.todoService.update(reqUser, params.id, { ...updateTodoDto, ...files })
     }
 
     @Delete(':id')
     @UsePipes(new JoiValidationPipe({ paramSchema: TodoValidation.id }))
-    async delete(@Param() params: { id: string }) {
-        return this.todoService.delete(params.id)
+    async delete(@Req() req: Request, @Param() params: { id: string }) {
+        const reqUser = req.user! as User
+
+        return this.todoService.delete(reqUser, params.id)
     }
 }
