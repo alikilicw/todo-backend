@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import mongoose, { Document } from 'mongoose'
+import { User } from 'src/user/user.model'
 
 @Schema({ timestamps: true, versionKey: false })
 export class Todo extends Document {
@@ -14,6 +15,9 @@ export class Todo extends Document {
 
     @Prop()
     fileKey: string
+
+    @Prop({ type: mongoose.Schema.ObjectId, ref: User.name, required: true })
+    user: User
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo)
