@@ -1,0 +1,453 @@
+{
+	"info": {
+		"_postman_id": "4696dd5d-52c5-4369-b8cf-07429e937c73",
+		"name": "Todo Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20274253"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"username\",\r\n    \"email\": \"email@gmail.com\",\r\n    \"password\": \"password.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root}}/auth/register",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGZlODRlMzQzMTNmN2FlZmUxY2Y1ZCIsInVzZXJuYW1lIjoiYWxpa2lsaWMiLCJpYXQiOjE3NDI3MjcyNDcsImV4cCI6MTc0MjcyNzQyN30.gYsB8emrgON9n0_GOCXXx6NF9jUCnWfsmVHMp_df7gA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root}}/auth/confirm?code=5243",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"auth",
+								"confirm"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "5243"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Who Am I",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGZlOWQ0MzQzMTNmN2FlZmUxY2Y3NiIsInVzZXJuYW1lIjoiYWxpa2lsaWMiLCJpYXQiOjE3NDI3Mjg5NzYsImV4cCI6MTc0NTMyMDk3Nn0.55UoPZP6Hmt5-DHj3dpp9IvcLFQdHmmAC5YcJy7NWfo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root}}/auth/whoami",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"auth",
+								"whoami"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root}}/auth/login",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGY1YzI1ODgwMjM1NWFkMWQ3YjJjNiIsInVzZXJuYW1lIjoiYWxpa2lsaWMiLCJpYXQiOjE3NDI2OTE4MTUsImV4cCI6MTc0NTI4MzgxNX0.ykdtThWQ6EhJjR9EEaB2QuvhtW575B7E9E4lJWrt-cI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root}}/users",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root}}/users/67df5c258802355ad1d7b2c6",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"users",
+								"67df5c258802355ad1d7b2c6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"username\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root}}/users/67df5c258802355ad1d7b2c6",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"users",
+								"67df5c258802355ad1d7b2c6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{root}}/users/67df5c258802355ad1d7b2c6",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"users",
+								"67df5c258802355ad1d7b2c6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Todo",
+			"item": [
+				{
+					"name": "Update Todo",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/aliki/Desktop/iş başvuru/cover letter.pdf",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "Her gün 10 dk kitap oku 2.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{root}}/todos/67e0217a2e0424bd8d5b41ff",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"todos",
+								"67e0217a2e0424bd8d5b41ff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Todo By Title",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root}}/todos?title=Kitap Oku",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"todos"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Kitap Oku"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Todo By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root}}/todos/67dddef34e78f9afd9edd469",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"todos",
+								"67dddef34e78f9afd9edd469"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Todos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root}}/todos",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"todos"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Kit",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Todo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Koşuya gitme",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "/C:/Users/aliki/Desktop/Some Photos/2.jpg"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/aliki/Desktop/iş başvuru/kimlik.pdf"
+								},
+								{
+									"key": "description",
+									"value": "Her gün 10km koş",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{root}}/todos",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"todos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Todo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{root}}/todos/67df36bee121c0699ed9fb44",
+							"host": [
+								"{{root}}"
+							],
+							"path": [
+								"todos",
+								"67df36bee121c0699ed9fb44"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get File",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{root}}/files/?fileKey=files/1742680541658-719126913-cover letter.pdf",
+					"host": [
+						"{{root}}"
+					],
+					"path": [
+						"files",
+						""
+					],
+					"query": [
+						{
+							"key": "fileKey",
+							"value": "files/1742680541658-719126913-cover letter.pdf"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGZmNDJhMzg3YjFjYjdjNmVjNTc4NiIsInVzZXJuYW1lIjoiYWxpa2lsaWMiLCJpYXQiOjE3NDI3NTYxMzEsImV4cCI6MTc0NTM0ODEzMX0.Iv_xd9e455yEixNEnDlwqoGp8gtpwHtfokgZ4kOM5hE",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "root",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
