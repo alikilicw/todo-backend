@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-    app:
+    todo_backend:
         container_name: todo_backend
         build:
             context: .
